@@ -7,6 +7,8 @@ const Repository = require('./models/repositoriesModel');
 require("dotenv").config();
 // ASIGN EXPRESS JSON
 app.use(express.json())
+// ASIGN EXPRESS URLENCODED
+app.use(express.urlencoded({extended: false}))
 
 
 // VAR INIT
@@ -34,11 +36,26 @@ app.get('/repository/:id', async (req,res) => {
     try {
         const {id} = req.params;
         const repository = await Repository.findById(id);
+
         res.status(200).json(repository)
     } catch (error) {
         res.status(500).json({message: error.message})
     }
 });
+
+// UPDATE A DATA
+app.put('/repository/:id', async (req, res) => {
+    try {
+        const {id} = req.params;
+        const repository = await Repository.findByIdAndUpdate(id, req.body);
+        // UPDATE RESPONSES
+        const newrepository = await Repository.findById(id);
+        res.status(200).json(newrepository);
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
+
 
 // POST A DATA
 app.post('/repository', async (req, res) => {
@@ -52,6 +69,21 @@ app.post('/repository', async (req, res) => {
         res.status(500).json({message: error.message})
     }
 })
+
+// DELETE A DATA
+app.delete('/repository/:id', async (req, res) => {
+    try {
+        const {id} = req.params;
+        const repository = await Repository.findByIdAndDelete(id);
+        if (!repository) {
+            return res.status(404).json({ message: `Cannot find any data with ID : ${id}`})
+        }
+        res.status(200).json(repository)
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
+
 
 
 // MONGODB CONNECTION
