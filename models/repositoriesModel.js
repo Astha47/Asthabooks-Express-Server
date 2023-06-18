@@ -3,10 +3,6 @@ const { type } = require('os');
 
 const repositorySchema = mongoose.Schema(
     {
-        id: {
-            type: String,
-            require: true
-        },
         type:{
             type: String,
         },
@@ -18,7 +14,10 @@ const repositorySchema = mongoose.Schema(
             type: String,
         },
         description:{
-            trpe: String,
+            type: String,
+        },
+        url:{
+            type: String,
         }
     },
     {
