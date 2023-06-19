@@ -10,6 +10,13 @@ app.use(express.json())
 // ASIGN EXPRESS URLENCODED
 app.use(express.urlencoded({extended: false}))
 
+// OAUTH API CORS
+app.use(
+    cors({
+        origin: "http//localhost:3000",
+    })
+)
+
 
 // VAR INIT
 const PORT = process.env.PORT;
