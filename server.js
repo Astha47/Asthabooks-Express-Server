@@ -14,7 +14,11 @@ app.use(express.urlencoded({extended: false}))
 // OAUTH API CORS
 app.use(
     cors({
-        origin: 'http://localhost:3000'
+        origin: ['http://localhost:3000', 'https://asthabooks-react.vercel.app'],
+        methods: {
+            'http://localhost:3000': ['GET', 'POST', 'PUT'],
+            'https://asthabooks-react.vercel.app': ['GET']
+        }
     })
 )
 
