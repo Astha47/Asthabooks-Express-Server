@@ -1,8 +1,14 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
-const Repository = require('./models/repositoriesModel');
 const cors = require('cors');
+
+// ===============================================================================================
+// ASSIGN DATA MODEL
+const Repository = require('./models/repositoriesModel');
+const Account = require('./models/accountModel')
+
+// ===============================================================================================
 
 // ASIGN DOTENV
 require("dotenv").config();
@@ -33,15 +39,9 @@ app.get('/', (req, res) => {
     res.send('Asthabooks API')
 })
 
-// GET ALL DATA
-app.get('/repositories', async (req,res) => {
-    try {
-        const repositories = await Repository.find({});
-        res.status(200).json(repositories)
-    } catch (error) {
-        res.status(500).json({message: error.message})
-    }
-});
+// ===============================================================================================
+// REPOSITORY ROUTER
+// ===============================================================================================
 
 // GET SELECTED DATA
 app.get('/repository/:id', async (req,res) => {
@@ -96,7 +96,72 @@ app.delete('/repository/:id', async (req, res) => {
     }
 })
 
+// ===============================================================================================
+// ACCOUNT API ROUTER
+// ===============================================================================================
 
+// GET ALL DATA
+app.get('/accounts', async (req,res) => {
+    try {
+        const accounts = await Account.find({});
+        res.status(200).json(accounts)
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+});
+
+// GET SELECTED DATA
+app.get('/account/:username', async (req,res) => {
+    try {
+        const {username} = req.params;
+        const account = await Account.findOne({username: username});
+
+        res.status(200).json(account)
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+});
+
+// UPDATE A DATA
+app.put('/account/:username', async (req, res) => {
+    try {
+        const {username} = req.params;
+        const account = await Account.findByIdAndUpdate(username, req.body);
+        // UPDATE RESPONSES
+        const newaccount = await Account.findById(username);
+        res.status(200).json(newaccount);
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
+
+
+// POST A DATA
+app.post('/account', async (req, res) => {
+    try{
+        const account = await Account.create(req.body);
+        res.status(200).json(account);
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({message: error.message})
+    }
+})
+
+// DELETE A DATA
+app.delete('/account/:id', async (req, res) => {
+    try {
+        const {id} = req.params;
+        const account = await Account.findByIdAndDelete(id);
+        if (!account) {
+            return res.status(404).json({ message: `Cannot find any data with ID : ${id}`})
+        }
+        res.status(200).json(account)
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
+
+// ===============================================================================================
 
 // MONGODB CONNECTION
 mongoose.connect(mongodbAPI)

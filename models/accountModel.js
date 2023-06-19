@@ -3,23 +3,18 @@ const { type } = require('os');
 
 const accountSchema = mongoose.Schema(
     {
-        id: {
+        username:{
             type: String,
             require: true
         },
-        type:{
-            type: String,
-        },
-        title:{
+        password:{
             type: String,
             require: true
         },
-        coverimg:{
+        email:{
             type: String,
         },
-        description:{
-            trpe: String,
-        }
+
     },
     {
         timestamps: true
