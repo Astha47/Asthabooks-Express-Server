@@ -123,18 +123,19 @@ app.delete('/repository/:id', async (req, res) => {
 app.post('/account/regist', async (req, res) => {
     try{
         // Membuat string acak sepanjang 30 karakter
-        const tempToken = [...Array(30)].map(() => (Math.random() * 36 | 0).toString(36)).join('');
+        const tempToken = Array.from({length: 30}, () => Math.floor(Math.random() * 36).toString(36)).join('');
 
-        // Menambahkan tempToken ke body request
-        req.body.tempToken = tempToken;
+        // Membuat objek baru dengan data dari req.body dan tempToken
+        const registrantData = {...req.body, tempToken};
 
-        const registrants = await Registrants.create(req.body);
+        const registrants = await Registrants.create(registrantData);
         res.status(200).json(registrants);
     } catch (error) {
         console.log(error.message);
         res.status(500).json({message: error.message})
     }
 })
+
 
 
 // GET SELECTED DATA
