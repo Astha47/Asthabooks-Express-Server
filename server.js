@@ -149,7 +149,7 @@ app.put('/account/:username', async (req, res) => {
 
 
 // POST A DATA
-app.post('/account', async (req, res) => {
+app.post('/account/add', async (req, res) => {
     try{
         const account = await Account.create(req.body);
         res.status(200).json(account);
