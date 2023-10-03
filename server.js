@@ -129,6 +129,7 @@ app.post('/account/regist', async (req, res) => {
         const registrantData = {...req.body, tempToken};
 
         const registrants = await Registrants.create(registrantData);
+        console.log(registrants)
         res.status(200).json(registrants);
     } catch (error) {
         console.log(error.message);
