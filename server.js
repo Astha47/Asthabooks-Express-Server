@@ -21,9 +21,10 @@ app.use(express.urlencoded({extended: false}))
 // OAUTH API CORS
 app.use(
     cors({
-        origin: ['http://localhost:3000', 'https://asthabooks-react.vercel.app'],
+        origin: ['http://localhost:3000', 'https://asthabooks-react.vercel.app', 'https://asthabooks-next.vercel.app'],
         methods: {
             'http://localhost:3000': ['GET', 'POST', 'PUT'],
+            'https://asthabooks-next.vercel.app': ['GET', 'POST', 'PUT'],
             'https://asthabooks-react.vercel.app': ['GET']
         }
     })
@@ -135,16 +136,6 @@ app.get('/account/:username', async (req,res) => {
 });
 
 // GET EMAIL AVAILABILITY
-app.get('/account/:email', async (req,res) => {
-    try {
-        const {email} = req.params;
-        const account = await Account.findOne({email: email});
-
-        res.status(200).json(account)
-    } catch (error) {
-        res.status(500).json({message: error.message})
-    }
-});
 
 app.get('/account/email_availability/:email', async (req, res) => {
     const {email} = req.params;
