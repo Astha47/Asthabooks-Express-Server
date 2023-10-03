@@ -122,6 +122,18 @@ app.get('/account/:username', async (req,res) => {
     }
 });
 
+// GET EMAIL AVAILABILITY
+app.get('/account/:email', async (req,res) => {
+    try {
+        const {email} = req.params;
+        const account = await Account.findOne({email: email});
+
+        res.status(200).json(account)
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+});
+
 // UPDATE A DATA
 app.put('/account/:username', async (req, res) => {
     try {
