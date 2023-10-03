@@ -7,6 +7,7 @@ const cors = require('cors');
 // ASSIGN DATA MODEL
 const Repository = require('./models/repositoriesModel');
 const Account = require('./models/accountModel')
+const Registrants = require('./models/registrantsModel')
 
 // ===============================================================================================
 
@@ -32,6 +33,7 @@ app.use(
 // VAR INIT
 const PORT = process.env.PORT;
 const mongodbAPI = process.env.MONGODB_API;
+const SERVER_TOKEN = process.env.SERVER_TOKEN;
 
 
 // MAIN ROUTE
@@ -110,6 +112,17 @@ app.delete('/repository/:id', async (req, res) => {
 // ACCOUNT API ROUTER
 // ===============================================================================================
 
+// POST A REGISTRANTS DATA
+app.post('/account/regist', async (req, res) => {
+    try{
+        const registrants = await Registrants.create(req.body);
+        res.status(200).json(registrants);
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({message: error.message})
+    }
+})
+
 // GET SELECTED DATA
 app.get('/account/:username', async (req,res) => {
     try {
@@ -133,6 +146,32 @@ app.get('/account/:email', async (req,res) => {
         res.status(500).json({message: error.message})
     }
 });
+
+app.get('/account/availability', async (req, res) => {
+    const { email, serverToken } = req.query;
+
+    // Periksa apakah serverToken sama dengan SERVER_TOKEN
+    if (serverToken !== process.env.SERVER_TOKEN) {
+        return res.status(403).json({ message: 'Permintaan ditolak' });
+    }
+
+    try {
+        // Cari akun dengan email yang diberikan
+        const account = await Account.findOne({ email: email });
+
+        // Jika akun tidak ditemukan, kembalikan availability: true
+        if (!account) {
+            return res.json({ availability: true });
+        }
+
+        // Jika akun ditemukan, kembalikan availability: false
+        return res.json({ availability: false });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Terjadi kesalahan pada server' });
+    }
+});
+
 
 // UPDATE A DATA
 app.put('/account/:username', async (req, res) => {
