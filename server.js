@@ -19,16 +19,23 @@ app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 
 // OAUTH API CORS
-app.use(
-    cors({
-        origin: ['http://localhost:3000', 'https://asthabooks-react.vercel.app', 'https://asthabooks-next.vercel.app'],
-        methods: {
-            'http://localhost:3000': ['GET', 'POST', 'PUT'],
-            'https://asthabooks-next.vercel.app': ['GET', 'POST', 'PUT'],
-            'https://asthabooks-react.vercel.app': ['GET']
-        }
-    })
-)
+
+app.use(cors({
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
+}));
+  
+
+// app.use(
+//     cors({
+//         origin: ['http://localhost:3000', 'http://localhost:3000/auth', 'https://asthabooks-react.vercel.app', 'https://asthabooks-next.vercel.app'],
+//         methods: {
+//             'http://localhost:3000': ['GET', 'POST', 'PUT'],
+//             'http://localhost:3000/auth': ['GET', 'POST', 'PUT'],
+//             'https://asthabooks-next.vercel.app': ['GET', 'POST', 'PUT'],
+//             'https://asthabooks-react.vercel.app': ['GET']
+//         }
+//     })
+// )
 
 
 // VAR INIT
