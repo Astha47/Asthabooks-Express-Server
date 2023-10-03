@@ -156,9 +156,10 @@ app.get('/account/email_availability/:email', async (req, res) => {
     try {
         // Cari akun dengan email yang diberikan
         const account = await Account.findOne({ email: email });
+        const accountWaiting = await Registrants.findOne({ email: email });
 
         // Jika akun tidak ditemukan, kembalikan availability: true
-        if (!account) {
+        if (!account && !accountWaiting) {
             return res.json({ availability: true });
         }
 
