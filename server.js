@@ -122,6 +122,12 @@ app.delete('/repository/:id', async (req, res) => {
 // POST A REGISTRANTS DATA
 app.post('/account/regist', async (req, res) => {
     try{
+        // Membuat string acak sepanjang 30 karakter
+        const tempToken = [...Array(30)].map(() => (Math.random() * 36 | 0).toString(36)).join('');
+
+        // Menambahkan tempToken ke body request
+        req.body.tempToken = tempToken;
+
         const registrants = await Registrants.create(req.body);
         res.status(200).json(registrants);
     } catch (error) {
@@ -129,6 +135,7 @@ app.post('/account/regist', async (req, res) => {
         res.status(500).json({message: error.message})
     }
 })
+
 
 // GET SELECTED DATA
 app.get('/account/:username', async (req,res) => {
