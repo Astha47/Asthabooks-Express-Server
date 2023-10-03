@@ -33,7 +33,6 @@ app.use(
 // VAR INIT
 const PORT = process.env.PORT;
 const mongodbAPI = process.env.MONGODB_API;
-const SERVER_TOKEN = process.env.SERVER_TOKEN;
 
 
 // MAIN ROUTE
@@ -148,13 +147,7 @@ app.get('/account/:email', async (req,res) => {
 });
 
 app.get('/account/availability', async (req, res) => {
-    const { email, serverToken } = req.query;
-
-    // Periksa apakah serverToken sama dengan SERVER_TOKEN
-    if (serverToken !== process.env.SERVER_TOKEN) {
-        return res.status(403).json({ message: 'Permintaan ditolak' });
-    }
-
+    const { email } = req.query;
     try {
         // Cari akun dengan email yang diberikan
         const account = await Account.findOne({ email: email });
