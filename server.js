@@ -146,7 +146,7 @@ app.get('/account/:email', async (req,res) => {
     }
 });
 
-app.get('/account/availability/:email', async (req, res) => {
+app.get('/account/email_availability/:email', async (req, res) => {
     const {email} = req.params;
     try {
         // Cari akun dengan email yang diberikan
