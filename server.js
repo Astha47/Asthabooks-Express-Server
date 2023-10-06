@@ -48,6 +48,42 @@ app.get('/', (req, res) => {
     res.send('Asthabooks API')
 })
 
+
+// Mailer
+const nodeMailer = require('nodemailer')
+
+// Mail format
+const html = (username, token) => {
+    `
+    <h1>helllo</h>
+    <p>this is your username ${username} and this is your token ${token}</p>
+    `
+};
+
+async function sendEmail (){
+    const transporter = nodeMailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        tls: true,
+        secure: true,
+        auth: {
+            user : process.env.USERNAME,
+            pass: process.env.PASS
+        }
+    });
+
+    const info = await transporter.sendMail({
+        from: "Astha ",
+        to: 'anasfathurrahman.edu@gmail.com',
+        subject: 'testing',
+        html: html,
+    })
+    console.log("message sent: " + info.messageId);
+}
+
+sendEmail()
+
+
 // ===============================================================================================
 // REPOSITORY ROUTER
 // ===============================================================================================
