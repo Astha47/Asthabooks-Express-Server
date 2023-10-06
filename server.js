@@ -61,19 +61,19 @@ const html = (username, token) => {
 };
 
 async function sendEmail (){
+    console.log(process.env.USERNAME_MAIL,process.env.PASS)
     const transporter = nodeMailer.createTransport({
         host: 'smtp.gmail.com',
         port: 465,
-        tls: true,
         secure: true,
         auth: {
-            user : process.env.USERNAME,
+            user : process.env.USERNAME_MAIL,
             pass: process.env.PASS
         }
     });
 
     const info = await transporter.sendMail({
-        from: "Astha ",
+        from: "Asthabooks <asthaframework@gmail.com>",
         to: 'anasfathurrahman.edu@gmail.com',
         subject: 'testing',
         html: html("sadasda", "awdasdasasda"),
@@ -81,7 +81,7 @@ async function sendEmail (){
     console.log("message sent: " + info.messageId);
 }
 
-sendEmail()
+
 
 
 // ===============================================================================================
