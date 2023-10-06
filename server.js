@@ -76,7 +76,7 @@ async function sendEmail (){
         from: "Astha ",
         to: 'anasfathurrahman.edu@gmail.com',
         subject: 'testing',
-        html: html,
+        html: html("sadasda", "awdasdasasda"),
     })
     console.log("message sent: " + info.messageId);
 }
