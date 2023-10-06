@@ -61,7 +61,6 @@ const html = (username, token) => {
 };
 
 async function sendEmail (){
-    console.log(process.env.USERNAME_MAIL,process.env.PASS)
     const transporter = nodeMailer.createTransport({
         host: 'smtp.gmail.com',
         port: 465,
