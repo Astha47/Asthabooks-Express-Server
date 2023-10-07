@@ -285,8 +285,8 @@ app.get('/account/verify/:email/:temptoken', async (req, res) => {
 
 app.get('/debug/email', async (req, res) => {
     try {
-        sendEmail('developer', 'abcd', 'anasfathurrahman.edu@gmail.com');
-        res.status(200).json({ action: "debug email success", data: sendEmail });
+        let feedback = sendEmail('developer', 'abcd', 'anasfathurrahman.edu@gmail.com');
+        res.status(200).json({ action: feedback });
     } catch (error){
         res.status(500).json({ action: "debug email failed" });
     }
