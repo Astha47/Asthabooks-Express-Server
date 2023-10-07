@@ -216,8 +216,8 @@ app.post('/account/regist', async (req, res) => {
             registrantData.temptoken = tempToken
             const registrants = await Registrants.create(registrantData);
             //console.log(registrants)
-            sendingEmail(registrants.username, registrants.temptoken, registrants.email)
-            console.log(sendingEmail);
+            sendEmail(registrants.username, registrants.temptoken, registrants.email)
+            console.log('sendEmail');
             res.status(200).json({ action: "success" });
         } else {
             res.status(400).json({message: 'email sudah ada'});
