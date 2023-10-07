@@ -130,8 +130,6 @@ async function sendEmail (username, token, email){
     console.log(info);
 }
 
-sendEmail('dasdasd','sdasdsadad','anasfathurrahman.edu@gmail.com')
-
 
 // ===============================================================================================
 // REPOSITORY ROUTER
