@@ -119,6 +119,9 @@ async function sendEmail (username, token, email){
         }
     });
 
+    console.log(process.env.USERNAME_MAIL)
+    console.log(process.env.PASS)
+
     const info = await transporter.sendMail({
         from: "Asthabooks <asthaframework@gmail.com>",
         to: email,
