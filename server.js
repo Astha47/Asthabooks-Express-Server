@@ -204,17 +204,25 @@ app.delete('/repository/:id', async (req, res) => {
 // POST A REGISTRANTS DATA
 app.post('/account/regist', async (req, res) => {
     try{
-        // Membuat string acak sepanjang 30 karakter
-        const tempToken = Array.from({length: 60}, () => Math.floor(Math.random() * 36).toString(36)).join('');
-
         // Membuat objek baru dengan data dari req.body
         const registrantData = {...req.body};
+        const isExistInQueue = await Registrants.findOne({ email: registrantData.email });
+        const isExistInData = await Account.findOne({ email: registrantData.email });
 
-        registrantData.temptoken = tempToken
-        const registrants = await Registrants.create(registrantData);
-        console.log(registrants)
-        res.status(200).json(registrants);
-        sendEmail(registrants.username, registrants.temptoken, registrants.email)
+        if ((!isExistInQueue)&&(!isExistInData)){
+            // Membuat string acak sepanjang 30 karakter
+            const tempToken = Array.from({length: 60}, () => Math.floor(Math.random() * 36).toString(36)).join('');
+    
+            registrantData.temptoken = tempToken
+            const registrants = await Registrants.create(registrantData);
+            //console.log(registrants)
+            sendEmail(registrants.username, registrants.temptoken, registrants.email)
+            console.log('Registrant berhasil ditulis');
+            res.status(200).json({ action: "success" });
+        } else {
+            res.status(400).json({message: 'email sudah ada'});
+            console.log('emailnya udah ada masbro')
+        }
     } catch (error) {
         console.log(error.message);
         res.status(500).json({message: error.message})
@@ -233,7 +241,7 @@ app.get('/account/verify/:email/:temptoken', async (req, res) => {
         const isAccount = await Registrants.findOne({ email: keyEmail });
         if (isAccount){
             if (isAccount.temptoken == temptoken){
-                console.log(isAccount)
+                //console.log(isAccount)
                 const token = Array.from({length: 60}, () => Math.floor(Math.random() * 36).toString(36)).join('');
                 const newaccount = {
                     username: isAccount.username,
@@ -244,9 +252,10 @@ app.get('/account/verify/:email/:temptoken', async (req, res) => {
 
                 const createAcc = await Account.create(newaccount);
                 const deleteRegist = await Registrants.findByIdAndDelete(isAccount.id);
-                console.log(createAcc)
-                console.log(deleteRegist)
-                res.status(200).json({ availability: "berhasil" });
+                //console.log(createAcc)
+                //console.log(deleteRegist)
+                console.log("berhasil dipindahkan")
+                res.status(200).json({ action: "success" });
             } else {
                 return res.json({ availability: "token salah" });
             }
