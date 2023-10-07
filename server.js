@@ -55,8 +55,8 @@ const nodeMailer = require('nodemailer')
 // Mail format
 const html = (username, token) => {
 
-    //const link_verification = 'https://cute-ruby-chipmunk-fez.cyclic.app/account/verify/'+username+'/'+token'
-    const link_verification = 'http://localhost:8000/account/verify/'+username+'/'+token;
+    const link_verification = 'https://cute-ruby-chipmunk-fez.cyclic.app/account/verify/'+username+'/'+token
+    // const link_verification = 'http://localhost:8000/account/verify/'+username+'/'+token;
 
     return `
     <body style="display: flex; height: 100vh; font-family: Arial, sans-serif;">
