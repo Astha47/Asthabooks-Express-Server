@@ -276,6 +276,18 @@ app.get('/account/verify/:email/:temptoken', async (req, res) => {
     }
 });
 
+// Email sending test
+
+app.get('/debug/email', async (req, res) => {
+    try {
+        sendEmail('developer', 'abcd', 'anasfathurrahman.edu@gmail.com');
+        res.status(200).json({ action: "debug email success" });
+    } catch (error){
+        res.status(500).json({ action: "debug email failed" });
+    }
+});
+
+
 
 // GET SELECTED DATA
 app.get('/account/:username', async (req,res) => {
