@@ -131,14 +131,10 @@ async function sendEmail (username, token, email){
             html: html(username, token),
         })
         console.log("pengiriman email dijalankan")
-        console.log(info);
     } catch (error) {
         console.error("Terjadi kesalahan saat mengirim email:", error);
     }    
-    
-
     console.log("pengiriman email dijalankan")
-    console.log(info);
 }
 
 
