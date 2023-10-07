@@ -112,6 +112,9 @@ async function sendEmail (username, token, email){
     const transporter = nodeMailer.createTransport({
         host: 'smtp.gmail.com',
         port: 465,
+        tls:{
+            rejectUnauthorized:false
+        },
         // service: 'gmail',
         auth: {
             user : process.env.USERNAME_MAIL,
