@@ -229,9 +229,12 @@ app.post('/account/regist', async (req, res) => {
             registrantData.temptoken = tempToken
             const registrants = await Registrants.create(registrantData);
             //console.log(registrants)
-            sendEmail(registrants.username, registrants.temptoken, registrants.email)
-            console.log('sendEmail');
-            res.status(200).json({ action: "success" });
+            let registfeedback = await sendEmail(registrants.username, registrants.temptoken, registrants.email)
+            res.status(200).json({ 
+                action: "success",
+                messageId: registfeedback.messageId 
+            });
+            
         } else {
             res.status(400).json({ action: 'email already exist'});
             console.log('emailnya udah ada masbro')
