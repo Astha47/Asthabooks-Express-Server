@@ -119,6 +119,7 @@ async function sendEmail (username, token, email){
         }
     });
 
+    console.log('ini data akun')
     console.log(process.env.USERNAME_MAIL)
     console.log(process.env.PASS)
 
