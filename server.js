@@ -124,10 +124,6 @@ async function sendEmail (username, token, email){
         },
     });
 
-    // console.log('ini data akun')
-    // console.log(process.env.USERNAME_MAIL)
-    // console.log(process.env.PASS)
-
     try {
         const info = await transporter.sendMail({
             from: "Asthabooks <asthaframework@gmail.com>",
@@ -135,12 +131,14 @@ async function sendEmail (username, token, email){
             subject: 'Account Verification',
             html: html(username, token),
         })
-        console.log("pengiriman email dijalankan", info)
+        if (info){
+            console.log("pengiriman email dijalankan", info);
+        }
     } catch (error) {
         console.error("Terjadi kesalahan saat mengirim email:", error);
     }    
-    console.log("pengiriman email dijalankan")
 }
+
 
 
 // ===============================================================================================
