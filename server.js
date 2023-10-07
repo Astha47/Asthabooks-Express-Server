@@ -135,7 +135,7 @@ async function sendEmail (username, token, email){
             subject: 'Account Verification',
             html: html(username, token),
         })
-        console.log("pengiriman email dijalankan")
+        console.log("pengiriman email dijalankan", info)
     } catch (error) {
         console.error("Terjadi kesalahan saat mengirim email:", error);
     }    
