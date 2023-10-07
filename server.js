@@ -54,13 +54,61 @@ const nodeMailer = require('nodemailer')
 
 // Mail format
 const html = (username, token) => {
-    `
-    <h1>helllo</h>
-    <p>this is your username ${username} and this is your token ${token}</p>
-    `
+
+    //const link_verification = 'https://cute-ruby-chipmunk-fez.cyclic.app/account/verify/'+username+'/'+token'
+    const link_verification = 'http://localhost:8000/account/verify/'+username+'/'+token;
+
+    return `
+    <body style="display: flex; height: 100vh; font-family: Arial, sans-serif;">
+        <div class="container" style="margin: auto; max-width: 100vw;">
+            <div class="header" style="background-color: #0b0b27; 
+            height: 200px; 
+            display: flex; 
+            background-color: #0b0b27;
+            text-align: center;
+            padding: 20px;
+            width: 100%;">
+                <img src="https://res.cloudinary.com/dggk9y0yt/image/upload/f_auto,q_auto/v1/Asthabooks/Logo/bgip7borld66pvk6uktu" alt="Logo" style="height: 100px; width: auto; margin: auto;">
+            </div>
+            <div class="content" style="
+            padding-top: 50px; 
+            padding-left: 20px; 
+            margin: 20px;
+            height: 400px;">
+                <h1>Terima Kasih Telah Mendaftar</h1>
+                <p>Silakan klik tombol di bawah ini untuk memverifikasi akun Anda.</p>
+                <a href=${link_verification}>
+                    <button style="
+                    background-color: #4CAF50; 
+                    color: white; 
+                    padding: 15px 32px; 
+                    text-align: center; 
+                    text-decoration: none; 
+                    display: inline-block; 
+                    font-size: 16px; 
+                    margin: 4px 2px; 
+                    cursor: pointer; 
+                    border: 0; 
+                    border-radius: 6px;
+                    cursor: pointer;"
+                    >Verifikasi Akun</button>
+                </a>
+            </div>
+            <div class="footer" style="
+            background-color: #0b0b27; 
+            color: white; 
+            width: 100%; 
+            text-align: center;
+            padding: 20px;
+            width: 100%;">
+                © Asthabooks 2023
+            </div>
+        </div>
+    </body>
+    `;
 };
 
-async function sendEmail (){
+async function sendEmail (username, token, email){
     const transporter = nodeMailer.createTransport({
         host: 'smtp.gmail.com',
         port: 465,
@@ -73,13 +121,12 @@ async function sendEmail (){
 
     const info = await transporter.sendMail({
         from: "Asthabooks <asthaframework@gmail.com>",
-        to: 'anasfathurrahman.edu@gmail.com',
-        subject: 'testing',
-        html: html("sadasda", "awdasdasasda"),
+        to: email,
+        subject: 'Account Verification',
+        html: html(username, token),
     })
     console.log("message sent: " + info.messageId);
 }
-
 
 
 
@@ -167,12 +214,50 @@ app.post('/account/regist', async (req, res) => {
         const registrants = await Registrants.create(registrantData);
         console.log(registrants)
         res.status(200).json(registrants);
+        sendEmail(registrants.username, registrants.temptoken, registrants.email)
     } catch (error) {
         console.log(error.message);
         res.status(500).json({message: error.message})
     }
 })
 
+// Account Verification
+
+app.get('/account/verify/:email/:temptoken', async (req, res) => {
+    const {email,temptoken} = req.params;
+    try {
+        // Jika akun ditemukan,
+        let keyEmail = email.toString();
+        console.log(email)
+        console.log(temptoken)
+        const isAccount = await Registrants.findOne({ email: keyEmail });
+        if (isAccount){
+            if (isAccount.temptoken == temptoken){
+                console.log(isAccount)
+                const token = Array.from({length: 60}, () => Math.floor(Math.random() * 36).toString(36)).join('');
+                const newaccount = {
+                    username: isAccount.username,
+                    password: isAccount.password,
+                    token : token,
+                    email : isAccount.email
+                }
+
+                const createAcc = await Account.create(newaccount);
+                const deleteRegist = await Registrants.findByIdAndDelete(isAccount.id);
+                console.log(createAcc)
+                console.log(deleteRegist)
+                res.status(200).json({ availability: "berhasil" });
+            } else {
+                return res.json({ availability: "token salah" });
+            }
+        } else {
+            return res.json({ availability: false });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Terjadi kesalahan pada server' });
+    }
+});
 
 
 // GET SELECTED DATA
