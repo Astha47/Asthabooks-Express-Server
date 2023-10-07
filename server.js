@@ -123,12 +123,19 @@ async function sendEmail (username, token, email){
     console.log(process.env.USERNAME_MAIL)
     console.log(process.env.PASS)
 
-    const info = await transporter.sendMail({
-        from: "Asthabooks <asthaframework@gmail.com>",
-        to: email,
-        subject: 'Account Verification',
-        html: html(username, token),
-    })
+    try {
+        const info = await transporter.sendMail({
+            from: "Asthabooks <asthaframework@gmail.com>",
+            to: email,
+            subject: 'Account Verification',
+            html: html(username, token),
+        })
+        console.log("pengiriman email dijalankan")
+        console.log(info);
+    } catch (error) {
+        console.error("Terjadi kesalahan saat mengirim email:", error);
+    }    
+    
 
     console.log("pengiriman email dijalankan")
     console.log(info);
