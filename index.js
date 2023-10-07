@@ -134,8 +134,10 @@ async function sendEmail (username, token, email){
         if (info){
             console.log("pengiriman email dijalankan", info);
         }
+        return info
     } catch (error) {
         console.error("Terjadi kesalahan saat mengirim email:", error);
+        return error
     }    
 }
 
@@ -284,7 +286,7 @@ app.get('/account/verify/:email/:temptoken', async (req, res) => {
 app.get('/debug/email', async (req, res) => {
     try {
         sendEmail('developer', 'abcd', 'anasfathurrahman.edu@gmail.com');
-        res.status(200).json({ action: "debug email success" });
+        res.status(200).json({ action: "debug email success", data: sendEmail });
     } catch (error){
         res.status(500).json({ action: "debug email failed" });
     }
