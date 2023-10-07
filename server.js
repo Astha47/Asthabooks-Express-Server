@@ -112,12 +112,16 @@ async function sendEmail (username, token, email){
     const transporter = nodeMailer.createTransport({
         service: 'gmail',
         host: 'smtp.gmail.com',
-        port: 587,
-        secure: false,
+        port: 465,
+        secure: true,
         auth: {
             user : process.env.USERNAME_MAIL,
             pass: process.env.PASS
-        }
+        },
+        tls: {
+            // do not fail on invalid certs
+            rejectUnauthorized: false,
+        },
     });
 
     // console.log('ini data akun')
