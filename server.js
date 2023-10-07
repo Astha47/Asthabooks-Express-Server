@@ -220,7 +220,7 @@ app.post('/account/regist', async (req, res) => {
             console.log('sendEmail');
             res.status(200).json({ action: "success" });
         } else {
-            res.status(400).json({message: 'email sudah ada'});
+            res.status(400).json({ action: 'email already exist'});
             console.log('emailnya udah ada masbro')
         }
     } catch (error) {
