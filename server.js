@@ -125,7 +125,9 @@ async function sendEmail (username, token, email){
         subject: 'Account Verification',
         html: html(username, token),
     })
-    console.log("message sent: " + info.messageId);
+
+    console.log("pengiriman email dijalankan")
+    console.log(info);
 }
 
 sendEmail('dasdasd','sdasdsadad','anasfathurrahman.edu@gmail.com')
