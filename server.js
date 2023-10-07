@@ -128,6 +128,7 @@ async function sendEmail (username, token, email){
     console.log("message sent: " + info.messageId);
 }
 
+sendEmail('dasdasd','sdasdsadad','anasfathurrahman.edu@gmail.com')
 
 
 // ===============================================================================================
