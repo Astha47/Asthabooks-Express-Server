@@ -257,8 +257,19 @@ app.get('/account/verify/:email/:temptoken', async (req, res) => {
         const isAccount = await Registrants.findOne({ email: keyEmail });
         if (isAccount){
             if (isAccount.temptoken == temptoken){
-                //console.log(isAccount)
-                const token = Array.from({length: 60}, () => Math.floor(Math.random() * 36).toString(36)).join('');
+                
+                
+                //Mencari token kosong
+                let token_availability = false
+                let token = ''
+                while(!token_availability){
+                    const tokenTemp = Array.from({length: 60}, () => Math.floor(Math.random() * 36).toString(36)).join('');
+                    const isToken = await Account.findOne({ token: tokenTemp });
+                    if (!isToken) {
+                        token_availability = true
+                        token = tokenTemp
+                    }
+                }
                 const newaccount = {
                     username: isAccount.username,
                     password: isAccount.password,
@@ -268,8 +279,7 @@ app.get('/account/verify/:email/:temptoken', async (req, res) => {
 
                 const createAcc = await Account.create(newaccount);
                 const deleteRegist = await Registrants.findByIdAndDelete(isAccount.id);
-                //console.log(createAcc)
-                //console.log(deleteRegist)
+                
                 console.log("berhasil dipindahkan")
                 res.status(200).json({ action: "success" });
             } else {
