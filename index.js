@@ -283,14 +283,14 @@ app.get('/account/verify/:email/:temptoken', async (req, res) => {
                 console.log("berhasil dipindahkan")
                 res.status(200).json({ action: "success" });
             } else {
-                return res.json({ availability: "token salah" });
+                return res.json({ action: "failed", message : "Token tidak sesuai" });
             }
         } else {
-            return res.json({ availability: false });
+            return res.json({ action: "failed", message : "Data tidak ditemukan" });
         }
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ message: 'Terjadi kesalahan pada server' });
+        return res.status(500).json({action: "failed", message: 'Terjadi kesalahan pada server' });
     }
 });
 
