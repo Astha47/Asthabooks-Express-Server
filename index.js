@@ -55,7 +55,7 @@ const nodeMailer = require('nodemailer')
 // Mail format
 const html = (username, token) => {
 
-    const link_verification = 'https://asthabooks-express-server.vercel.app/account/verify/'+username+'/'+token
+    const link_verification = 'https://asthabooks-next.vercel.app/auth/confirmation/'+username+'/'+token
     // const link_verification = 'http://localhost:8000/account/verify/'+username+'/'+token;
 
     return `
