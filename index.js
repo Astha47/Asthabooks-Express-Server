@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const cors = require('cors');
+const CookiePraser = require('cookie-parser')
+const jwt = require('jsonwebtoken');
 
 // ===============================================================================================
 // ASSIGN DATA MODEL
@@ -23,6 +25,10 @@ app.use(express.urlencoded({extended: false}))
 app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
+
+// COOKIES MIDDLEWARE
+app.use(CookiePraser());
+
   
 
 // app.use(
@@ -55,8 +61,8 @@ const nodeMailer = require('nodemailer')
 // Mail format
 const html = (username, token) => {
 
-    const link_verification = 'https://asthabooks-next.vercel.app/auth/confirmation/gate/'+username+'/'+token
-    // const link_verification = 'http://localhost:8000/account/verify/'+username+'/'+token;
+    //const link_verification = 'https://asthabooks-next.vercel.app/auth/confirmation/gate/'+username+'/'+token
+    const link_verification = 'http://localhost:8000/account/verify/'+username+'/'+token;
 
     return `
     <body style="display: flex; height: 100vh; font-family: Arial, sans-serif;">
@@ -146,6 +152,34 @@ async function sendEmail (username, token, email){
 // ===============================================================================================
 // REPOSITORY ROUTER
 // ===============================================================================================
+
+// COOKIES
+
+const maxAge = 7 * 24 * 60 * 60 * 1000;
+
+const createToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT, {
+        expiresIn : maxAge
+    });
+}
+
+
+app.get('/set-cookies', (req, res) => {
+    // res.setHeader('Set-Cookie', 'newUser=true');
+
+    res.cookie('newUser', false);
+    res.cookie('isEmployee', true, {maxAge: 1000 * 60 * 60 * 24 * 7, httpOnly: true, sameSite : 'none'});
+
+    res.send('you got the cookis!');
+})
+
+app.get('/read-cookies', (req, res) => {
+    const cookies = req.cookies;
+    console.log(cookies)
+    res.json(cookies);
+})
+
+
 
 // GET ALL DATA
 app.get('/repositories', async (req,res) => {
@@ -245,7 +279,53 @@ app.post('/account/regist', async (req, res) => {
     }
 })
 
-// Account Verification
+// LOGIN FUNCTION
+
+app.post('/account/login', async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const user = await Account.login(email, password);
+        const token = createToken(user);
+        res.cookie('asthaID', token, {httpOnly:true, maxAge: maxAge});
+        res.status(200).json({ asthaID : user});
+        console.log("user : ", user, " berhasil dikirim")
+    }
+    catch (error){
+        console.log(error.message);
+        res.status(400).json({"error" : error.message});
+    }
+});
+
+app.get('/account/UserValidation', async (req, res) => {
+    const cookies = req.cookies;
+    
+})
+
+
+
+// DELETE ACCOUNT (DEBUGGING PURPOSE ONLY)
+
+app.delete('/deleteAccount', async (req, res) => {
+    const { email } = req.body;
+    //console.log(email)
+
+    try {
+        const registrant = await Registrants.findOneAndDelete({ email });
+        
+        //console.log(registrant)
+
+        if (!registrant) {
+            return res.status(404).json({ message: 'Akun dengan email tersebut tidak ditemukan.' });
+        }
+
+        res.status(200).json({ message: 'Akun berhasil dihapus.' });
+    } catch (err) {
+        res.status(500).json({ message: 'Terjadi kesalahan saat menghapus akun.', error: err.message });
+    }
+});
+
+// EMAIL VERIFICATION
 
 app.get('/account/verify/:email/:temptoken', async (req, res) => {
     const {email,temptoken} = req.params;
@@ -294,93 +374,6 @@ app.get('/account/verify/:email/:temptoken', async (req, res) => {
     }
 });
 
-// Email sending test
-
-app.get('/debug/email', async (req, res) => {
-    try {
-        let feedback = await sendEmail('developer', 'abcd', 'anasfathurrahman.edu@gmail.com');
-        res.status(200).json({ action: feedback });
-    } catch (error){
-        res.status(500).json({ action: "debug email failed" });
-    }
-});
-
-
-
-// GET SELECTED DATA
-app.get('/account/:username', async (req,res) => {
-    try {
-        const {username} = req.params;
-        const account = await Account.findOne({username: username});
-
-        res.status(200).json(account)
-    } catch (error) {
-        res.status(500).json({message: error.message})
-    }
-});
-
-// GET EMAIL AVAILABILITY
-
-app.get('/account/email_availability/:email', async (req, res) => {
-    const {email} = req.params;
-    try {
-        // Cari akun dengan email yang diberikan
-        const account = await Account.findOne({ email: email });
-        const accountWaiting = await Registrants.findOne({ email: email });
-
-        // Jika akun tidak ditemukan, kembalikan availability: true
-        if (!account && !accountWaiting) {
-            return res.json({ availability: true });
-        }
-
-        // Jika akun ditemukan, kembalikan availability: false
-        return res.json({ availability: false });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: 'Terjadi kesalahan pada server' });
-    }
-});
-
-
-// UPDATE A DATA
-app.put('/account/:username', async (req, res) => {
-    try {
-        const {username} = req.params;
-        const account = await Account.findByIdAndUpdate(username, req.body);
-        // UPDATE RESPONSES
-        const newaccount = await Account.findById(username);
-        res.status(200).json(newaccount);
-    } catch (error) {
-        res.status(500).json({message: error.message})
-    }
-})
-
-
-// POST A DATA
-app.post('/account/add', async (req, res) => {
-    try{
-        const account = await Account.create(req.body);
-        res.status(200).json(account);
-    } catch (error) {
-        console.log(error.message);
-        res.status(500).json({message: error.message})
-    }
-})
-
-// DELETE A DATA
-app.delete('/account/:id', async (req, res) => {
-    try {
-        const {id} = req.params;
-        const account = await Account.findByIdAndDelete(id);
-        if (!account) {
-            return res.status(404).json({ message: `Cannot find any data with ID : ${id}`})
-        }
-        res.status(200).json(account)
-    } catch (error) {
-        res.status(500).json({message: error.message})
-    }
-})
-
 // ===============================================================================================
 
 // MONGODB CONNECTION
@@ -393,3 +386,15 @@ mongoose.connect(mongodbAPI)
 }).catch((error) => {
     console.log(error)
 })
+
+
+// Email sending test
+
+// app.get('/debug/email', async (req, res) => {
+//     try {
+//         let feedback = await sendEmail('developer', 'abcd', 'anasfathurrahman.edu@gmail.com');
+//         res.status(200).json({ action: feedback });
+//     } catch (error){
+//         res.status(500).json({ action: "debug email failed" });
+//     }
+// });
