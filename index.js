@@ -288,7 +288,7 @@ app.post('/account/login', async (req, res) => {
         const user = await Account.login(email, password);
         const token = createToken(user);
         res.cookie('asthaID', token, {httpOnly:true, maxAge: maxAge});
-        res.status(200).json({ asthaID : user});
+        // res.status(200).json({ asthaID : token});
         console.log("user : ", user, " berhasil dikirim")
     }
     catch (error){
@@ -312,8 +312,6 @@ app.delete('/deleteAccount', async (req, res) => {
 
     try {
         const registrant = await Registrants.findOneAndDelete({ email });
-        
-        //console.log(registrant)
 
         if (!registrant) {
             return res.status(404).json({ message: 'Akun dengan email tersebut tidak ditemukan.' });
