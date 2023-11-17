@@ -288,7 +288,7 @@ app.post('/account/login', async (req, res) => {
         const user = await Account.login(email, password);
         const token = createToken(user);
         res.cookie('asthaID', token, {httpOnly:true, maxAge: maxAge});
-        // res.status(200).json({ asthaID : token});
+        res.status(200).json({ asthaID : "success"});
         console.log("user : ", user, " berhasil dikirim")
     }
     catch (error){
