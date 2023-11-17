@@ -168,9 +168,7 @@ app.get('/set-cookies', (req, res) => {
     // res.setHeader('Set-Cookie', 'newUser=true');
 
     res.cookie('newUser', false);
-    res.cookie('isEmployee', true, {maxAge: 1000 * 60 * 60 * 24 * 7, httpOnly: true, sameSite : 'none'});
-
-    res.send('you got the cookis!');
+    res.cookie('isEmployee', true, {maxAge: 1000 * 60 * 60 * 24 * 7});
 })
 
 app.get('/read-cookies', (req, res) => {
@@ -287,12 +285,12 @@ app.post('/account/login', async (req, res) => {
     try {
         const user = await Account.login(email, password);
         const token = createToken(user);
-        res.cookie('asthaID', token, {httpOnly:true, maxAge: maxAge});
-        res.status(200).json({ asthaID : "success"});
-        console.log("user : ", user, " berhasil dikirim")
+        // res.cookie('asthaID', token, {httpOnly:true, maxAge: maxAge});
+        res.status(200).json({ asthaID : token});
+        // console.log("user : ", user, " berhasil dikirim")
     }
     catch (error){
-        console.log(error.message);
+        // console.log(error.message);
         res.status(400).json({"error" : error.message});
     }
 });
