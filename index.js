@@ -350,7 +350,8 @@ app.get('/account/verify/:email/:temptoken', async (req, res) => {
                     username: isAccount.username,
                     password: isAccount.password,
                     token : token,
-                    email : isAccount.email
+                    email : isAccount.email,
+                    role : isAccount.role
                 }
 
                 const createAcc = await Account.create(newaccount);
