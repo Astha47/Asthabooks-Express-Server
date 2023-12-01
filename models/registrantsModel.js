@@ -19,6 +19,9 @@ const registrantsSchema = mongoose.Schema(
         email:{
             type: String,
         },
+        role:{
+            type: String,
+        },
 
     },
     {
