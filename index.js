@@ -101,7 +101,7 @@ const html = (username, token) => {
 };
 
 async function sendEmail (username, token, email){
-    console.log("pengiriman dimulai")
+    console.log("pengiriman dimulai", Date())
     const transporter = nodeMailer.createTransport({
         service: 'gmail',
         host: 'smtp.gmail.com',
@@ -125,7 +125,7 @@ async function sendEmail (username, token, email){
             html: html(username, token),
         })
         if (info){
-            console.log("pengiriman email berhasil dijalankan", info);
+            console.log("pengiriman email berhasil dijalankan pada", Date(), info);
         }
         return info
     } catch (error) {
