@@ -29,20 +29,6 @@ app.use(cors({
 // COOKIES MIDDLEWARE
 app.use(CookiePraser());
 
-  
-
-// app.use(
-//     cors({
-//         origin: ['http://localhost:3000', 'http://localhost:3000/auth', 'https://asthabooks-react.vercel.app', 'https://asthabooks-next.vercel.app'],
-//         methods: {
-//             'http://localhost:3000': ['GET', 'POST', 'PUT'],
-//             'http://localhost:3000/auth': ['GET', 'POST', 'PUT'],
-//             'https://asthabooks-next.vercel.app': ['GET', 'POST', 'PUT'],
-//             'https://asthabooks-react.vercel.app': ['GET']
-//         }
-//     })
-// )
-
 
 // VAR INIT
 const PORT = process.env.PORT;
@@ -115,6 +101,7 @@ const html = (username, token) => {
 };
 
 async function sendEmail (username, token, email){
+    console.log("pengiriman dimulai")
     const transporter = nodeMailer.createTransport({
         service: 'gmail',
         host: 'smtp.gmail.com',
@@ -138,7 +125,7 @@ async function sendEmail (username, token, email){
             html: html(username, token),
         })
         if (info){
-            console.log("pengiriman email dijalankan", info);
+            console.log("pengiriman email berhasil dijalankan", info);
         }
         return info
     } catch (error) {
