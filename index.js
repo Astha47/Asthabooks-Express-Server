@@ -248,14 +248,10 @@ app.post('/account/regist', async (req, res) => {
             registrantData.temptoken = tempToken
             const registrants = await Registrants.create(registrantData);
             //console.log(registrants)
-            // let registfeedback = await sendEmail(registrants.username, registrants.temptoken, registrants.email)
-            // res.status(200).json({ 
-            //     action: "success",
-            //     messageId: registfeedback.messageId 
-            // });
-            sendEmail(registrants.username, registrants.temptoken, registrants.email)
+            let registfeedback = await sendEmail(registrants.username, registrants.temptoken, registrants.email)
             res.status(200).json({ 
-                action: "success"
+                action: "success",
+                messageId: registfeedback.messageId 
             });
             
         } else {
