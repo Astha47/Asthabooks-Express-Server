@@ -242,12 +242,12 @@ app.post('/account/regist', async (req, res) => {
         const isExistInData = await Account.findOne({ email: registrantData.email });
 
         if ((!isExistInQueue)&&(!isExistInData)){
-            
-            let registfeedback = await sendEmail(registrantData.username, registrantData.temptoken, registrantData.email)
             // Membuat string acak sepanjang 30 karakter
             const tempToken = Array.from({length: 60}, () => Math.floor(Math.random() * 36).toString(36)).join('');
-            
+
             registrantData.temptoken = tempToken
+            
+            let registfeedback = await sendEmail(registrantData.username, registrantData.temptoken, registrantData.email)
             const registrants = await Registrants.create(registrantData);
             res.status(200).json({ 
                 action: "success",
