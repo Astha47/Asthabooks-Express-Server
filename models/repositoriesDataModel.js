@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { type } = require('os');
 
-const repositorySchema = mongoose.Schema(
+const repositoryDataSchema = mongoose.Schema(
     {
         type:{
             type: String,
@@ -10,20 +10,13 @@ const repositorySchema = mongoose.Schema(
             type: String,
             require: true
         },
-        genre:{
-            type: [String]
-        },
-        author:{
-            type: String,
-            require: true
-        },
-        imgbanner:{
+        coverimg:{
             type: String,
         },
-        imgcover:{
+        shortdescription:{
             type: String,
         },
-        description:{
+        longdescription:{
             type: String,
         },
         url:{
@@ -35,6 +28,6 @@ const repositorySchema = mongoose.Schema(
     }
 );
 
-const Repository = mongoose.model('Repository', repositorySchema);
+const RepositoryData = mongoose.model('RepositoryData', repositoryDataSchema);
 
-module.exports = Repository;
+module.exports = RepositoryData;
