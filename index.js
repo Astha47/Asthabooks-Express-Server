@@ -46,6 +46,7 @@ app.use(CookiePraser());
 // VAR INIT
 const PORT = process.env.PORT;
 const mongodbAPI = process.env.MONGODB_API;
+const TOKEN = process.env.ASTHABOOKS
 
 
 // MAIN ROUTE
@@ -177,6 +178,24 @@ app.get('/read-cookies', (req, res) => {
     res.json(cookies);
 })
 
+// GET Updates
+
+app.get('/component/update-latest/:token', async (req, res) => {
+    try {
+        const { token } = req.params; 
+        if (token !== TOKEN) {
+            return res.status(403).json({ message: 'Unauthorized access' });
+        }
+
+        const repositories = await Repository.find({})
+            .sort({ updatedAt: -1 }) // Mengurutkan data berdasarkan updatedAt secara descending
+            .limit(10); // Mengambil hanya 10 data teratas
+
+        res.status(200).json(repositories);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
 
 
 // GET ALL DATA
