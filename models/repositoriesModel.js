@@ -23,7 +23,10 @@ const repositorySchema = mongoose.Schema(
         imgcover:{
             type: String,
         },
-        description:{
+        shortdescription:{
+            type: String,
+        },
+        longdescription:{
             type: String,
         },
         url:{
