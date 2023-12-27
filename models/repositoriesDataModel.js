@@ -6,6 +6,10 @@ const repositoryDataSchema = mongoose.Schema(
         type:{
             type: String,
         },
+        RepoID:{
+            type: String,
+            require: true
+        },
         title:{
             type: String,
             require: true

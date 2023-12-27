@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { type } = require('os');
 
 const repositorySchema = mongoose.Schema(
     {
@@ -31,12 +30,22 @@ const repositorySchema = mongoose.Schema(
         },
         url:{
             type: String,
+        },
+        viewcount:{
+            type: Number,
         }
     },
     {
         timestamps: true
     }
 );
+
+repositorySchema.methods.incrementViewCount = function() {
+    this.viewcount += 1;
+    const updateObject = { viewcount: this.viewcount };
+    const options = { new: true, timestamps: false };
+    return this.constructor.findByIdAndUpdate(this._id, updateObject, options);
+};
 
 const Repository = mongoose.model('Repository', repositorySchema);
 

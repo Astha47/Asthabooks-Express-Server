@@ -149,11 +149,6 @@ async function sendEmail (username, token, email){
 }
 
 
-
-// ===============================================================================================
-// REPOSITORY ROUTER
-// ===============================================================================================
-
 // COOKIES
 
 const maxAge = 7 * 24 * 60 * 60 * 1000;
@@ -178,7 +173,9 @@ app.get('/read-cookies', (req, res) => {
     res.json(cookies);
 })
 
-// GET Updates
+// ===============================================================================================
+// REPOSITORY ROUTER
+// ===============================================================================================
 
 app.get('/component/update-latest/:token', async (req, res) => {
     try {
@@ -256,6 +253,20 @@ app.delete('/repository/:id', async (req, res) => {
             return res.status(404).json({ message: `Cannot find any data with ID : ${id}`})
         }
         res.status(200).json(repository)
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
+
+// REPO VIEW COUNTER
+
+app.post('/repository/visit', async (req,res) => {
+    try {
+        const { id } = req.body;
+        const repository = await Repository.findById(id);
+        await repository.incrementViewCount()
+        const updatedRepository = await Repository.findById(id);
+        return res.status(404).json({ curretVisitor: updatedRepository.viewcount})
     } catch (error) {
         res.status(500).json({message: error.message})
     }
