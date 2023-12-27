@@ -11,6 +11,7 @@ const Repository = require('./models/repositoriesModel');
 const RepositoryData = require('./models/repositoriesDataModel');
 const Account = require('./models/accountModel')
 const Registrants = require('./models/registrantsModel')
+const VisitorsQueue = require('./models/VisitorsQueueModel')
 
 // ===============================================================================================
 
@@ -177,6 +178,7 @@ app.get('/read-cookies', (req, res) => {
 // REPOSITORY ROUTER
 // ===============================================================================================
 
+// Get Latest
 app.get('/component/update-latest/:token', async (req, res) => {
     try {
         const { token } = req.params; 
@@ -187,6 +189,24 @@ app.get('/component/update-latest/:token', async (req, res) => {
         const repositories = await Repository.find({})
             .sort({ updatedAt: -1 }) // Mengurutkan data berdasarkan updatedAt secara descending
             .limit(10); // Mengambil hanya 10 data teratas
+
+        res.status(200).json(repositories);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Get Rank
+app.get('/component/rank/:token', async (req, res) => {
+    try {
+        const { token } = req.params; 
+        if (token !== TOKEN) {
+            return res.status(403).json({ message: 'Unauthorized access' });
+        }
+
+        const repositories = await Repository.find({})
+            .sort({ viewcount: 1 }) // Mengurutkan data berdasarkan updatedAt secara descending
+            .limit(3); // Mengambil hanya 10 data teratas
 
         res.status(200).json(repositories);
     } catch (error) {
@@ -263,10 +283,19 @@ app.delete('/repository/:id', async (req, res) => {
 app.post('/repository/visit', async (req,res) => {
     try {
         const { id } = req.body;
-        const repository = await Repository.findById(id);
-        await repository.incrementViewCount()
+        await VisitorsQueue.create(req.body);
+        const AllQueueData = await VisitorsQueue.find({});
+        await VisitorsQueue.deleteMany({});
+
+        // Iterasi melalui setiap objek dalam AllQueueData
+        for (let i = 0; i < AllQueueData.length; i++) {
+            const repository = await Repository.findById(AllQueueData[i].id);
+            await repository.incrementViewCount();
+        }
+
         const updatedRepository = await Repository.findById(id);
-        return res.status(404).json({ curretVisitor: updatedRepository.viewcount})
+
+        return res.status(200).json({ curretVisitor: updatedRepository.viewcount})
     } catch (error) {
         res.status(500).json({message: error.message})
     }
