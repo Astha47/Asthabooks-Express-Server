@@ -344,9 +344,8 @@ app.post('/account/login', async (req, res) => {
     try {
         const user = await Account.login(email, password);
         const token = createToken(user);
-        // res.cookie('asthaID', token, {httpOnly:true, maxAge: maxAge});
+        console.log("ini tokennya : ", token)
         res.status(200).json({ asthaID : token});
-        // console.log("user : ", user, " berhasil dikirim")
     }
     catch (error){
         // console.log(error.message);
