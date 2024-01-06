@@ -373,6 +373,7 @@ app.get('/account/UserValidation', async (req, res) => {
 app.post('/account/info', async (req , res) => {
     const { token ,asthaID } = req.body;
     const id = getIdFromToken(asthaID)
+    console.log("ini asthaID : ", asthaID)
     console.log("ini id yang diterjemahkan :",id)
     const account = await Account.findOne({ token: id })
 
