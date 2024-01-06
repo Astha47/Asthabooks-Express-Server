@@ -19,6 +19,9 @@ const accountSchema = mongoose.Schema(
         email:{
             type: String,
         },
+        avatar:{
+            type: String,
+        },
         role:{
             type: String,
         },

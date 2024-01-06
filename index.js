@@ -359,6 +359,29 @@ app.get('/account/UserValidation', async (req, res) => {
     
 })
 
+// GET ACCOUNT DATA
+
+app.post('/account/info', async (req , res) => {
+    const { token } = req.body;
+    const account = await Account.findOne({ token: token })
+
+    if(account){
+        const accountInfo = {
+            status : true,
+            username : account.username,
+            email : account.email,
+            avatar : account.avatar,
+            role : account.role,
+        }
+        res.status(200).json(accountInfo);
+    } else {
+        res.status(200).json({
+            status : false,
+        });
+    }
+    
+})
+
 
 
 // DELETE ACCOUNT (DEBUGGING PURPOSE ONLY)
