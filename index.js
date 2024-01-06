@@ -362,8 +362,8 @@ app.get('/account/UserValidation', async (req, res) => {
 // GET ACCOUNT DATA
 
 app.post('/account/info', async (req , res) => {
-    const { token } = req.body;
-    const account = await Account.findOne({ token: token })
+    const { token,asthaID } = req.body;
+    const account = await Account.findOne({ token: asthaID })
 
     if(account){
         const accountInfo = {
