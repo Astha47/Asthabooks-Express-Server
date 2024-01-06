@@ -154,23 +154,6 @@ async function sendEmail (username, token, email){
 
 const maxAge = 7 * 24 * 60 * 60 * 1000;
 
-const createToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT, {
-        expiresIn : maxAge
-    });
-}
-
-const getIdFromToken = (token) => {
-    jwt.verify(token, process.env.JWT, (err, decoded) => {
-        if (err) {
-            console.error(err)
-        } else {
-            return decoded.id 
-        }
-    })
-}
-
-
 app.get('/set-cookies', (req, res) => {
     // res.setHeader('Set-Cookie', 'newUser=true');
 
@@ -352,8 +335,7 @@ app.post('/account/login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const user = await Account.login(email, password);
-        const token = createToken(user);
+        const token = await Account.login(email, password);
         console.log("ini tokennya : ", token)
         res.status(200).json({ asthaID : token});
     }
@@ -372,10 +354,8 @@ app.get('/account/UserValidation', async (req, res) => {
 
 app.post('/account/info', async (req , res) => {
     const { token ,asthaID } = req.body;
-    const id = getIdFromToken(asthaID)
     console.log("ini asthaID : ", asthaID)
-    console.log("ini id yang diterjemahkan :",id)
-    const account = await Account.findOne({ token: id })
+    const account = await Account.findOne({ token: asthaID })
 
     try {
         if(account){
