@@ -160,6 +160,16 @@ const createToken = (id) => {
     });
 }
 
+const getIdFromToken = (token) => {
+    jwt.verify(token, process.env.JWT, (err, decoded) => {
+        if (err) {
+            console.error(err)
+        } else {
+            return decoded.id 
+        }
+    })
+}
+
 
 app.get('/set-cookies', (req, res) => {
     // res.setHeader('Set-Cookie', 'newUser=true');
@@ -361,8 +371,9 @@ app.get('/account/UserValidation', async (req, res) => {
 // GET ACCOUNT DATA
 
 app.post('/account/info', async (req , res) => {
-    const { token,asthaID } = req.body;
-    const account = await Account.findOne({ token: asthaID })
+    const { token ,asthaID } = req.body;
+    const id = getIdFromToken(asthaID)
+    const account = await Account.findOne({ token: id })
 
     try {
         if(account){
