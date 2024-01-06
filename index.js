@@ -365,20 +365,31 @@ app.post('/account/info', async (req , res) => {
     const { token,asthaID } = req.body;
     const account = await Account.findOne({ token: asthaID })
 
-    if(account){
-        const accountInfo = {
-            status : true,
-            username : account.username,
-            email : account.email,
-            avatar : account.avatar,
-            role : account.role,
-        }
-        res.status(200).json(accountInfo);
-    } else {
-        res.status(200).json({
+    try {
+        if(account){
+            const accountInfo = {
+                status : true,
+                username : account.username,
+                email : account.email,
+                avatar : account.avatar,
+                role : account.role,
+                message : "success",
+            }
+            res.status(200).json(accountInfo);
+        } else {
+            res.status(200).json({
+                status : false,
+                message : "Account not found"
+            });
+        }    
+    }
+    catch (error){
+        res.status(400).json({
             status : false,
+            message : error.message,
         });
     }
+
     
 })
 
